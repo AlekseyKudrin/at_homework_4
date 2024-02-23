@@ -1,5 +1,7 @@
 package com.autodns.getway.dto;
 
+import java.util.Objects;
+
 public class Profile {
     Integer id;
     String name;
@@ -45,5 +47,29 @@ public class Profile {
 
     public void setPantone_value(String pantone_value) {
         this.pantone_value = pantone_value;
+    }
+
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", year=" + year +
+                ", color='" + color + '\'' +
+                ", pantone_value='" + pantone_value + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Profile profile = (Profile) o;
+        return Objects.equals(id, profile.id) && Objects.equals(name, profile.name) && Objects.equals(year, profile.year) && Objects.equals(color, profile.color) && Objects.equals(pantone_value, profile.pantone_value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, year, color, pantone_value);
     }
 }

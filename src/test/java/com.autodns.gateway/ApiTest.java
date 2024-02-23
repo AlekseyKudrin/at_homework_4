@@ -1,17 +1,12 @@
 package com.autodns.gateway;
 
-import com.autodns.getway.dto.Login;
-import com.autodns.getway.dto.PageProfiles;
-import com.autodns.getway.dto.PageUsers;
-import com.autodns.getway.dto.User;
+import com.autodns.getway.dto.*;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static helper.Handling.buildMessage;
 import static io.restassured.RestAssured.given;
@@ -79,19 +74,26 @@ public class ApiTest {
                 .when()
                 .get("https://reqres.in/api/unknown")
                 .then()
-                .log().all()
                 .extract().body().as(PageProfiles.class);
+        List<Profile> profiles = pageProfilesDto.getData();
+
+        List<Profile> profilesSort = profiles.stream().sorted(Comparator.comparingInt(Profile::getYear)).collect(Collectors.toList());
+        for (int i = 0; i < profiles.size(); i++) {
+            System.out.println(profilesSort.get(i));
+            if (!profiles.get(i).getYear().equals(profilesSort.get(i).getYear())) {
+                Assert.fail("Массив не отсортирован");
+            }
+        }
     }
 
     @Test
-    public void test() {
+    public void test5() {
         Response response = given()
                 .when()
                 .get("https://gateway.autodns.com/")
                 .then()
-                .log().all()
                 .extract().response();
-        int a = (response.body().asString().length() - response.body().asString().replace("</", "").length()) / 2;
-        System.out.println(a);
+        int countTeg = (response.body().asString().length() - response.body().asString().replace("</", "").length()) / 2;
+        Assert.assertEquals(countTeg, 15, "Количество тегов не равно 15");
     }
 }
